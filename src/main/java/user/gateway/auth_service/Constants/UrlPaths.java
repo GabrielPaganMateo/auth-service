@@ -4,4 +4,6 @@ public class UrlPaths {
 
     public static final String HEALTHCHECK = "/health";
 
+    public static final String REGISTER = "/register";
+    
 }
