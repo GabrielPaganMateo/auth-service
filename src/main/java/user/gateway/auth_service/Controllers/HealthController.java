@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import user.gateway.auth_service.Configurations.ApplicationProperties;
 import user.gateway.auth_service.Constants.UrlPaths;
 import user.gateway.auth_service.Responses.HealthResponse;
 
@@ -13,10 +14,10 @@ import user.gateway.auth_service.Responses.HealthResponse;
 public class HealthController {
 
     @Autowired
-    HealthResponse healthResponse;
+    ApplicationProperties applicationProperties;
 
     @GetMapping(UrlPaths.HEALTHCHECK)
     public ResponseEntity<HealthResponse> checkHealth() {
-        return new ResponseEntity<>(healthResponse, HttpStatus.OK);
+        return new ResponseEntity<>(new HealthResponse(applicationProperties.getVersion()), HttpStatus.OK);
     }
 }

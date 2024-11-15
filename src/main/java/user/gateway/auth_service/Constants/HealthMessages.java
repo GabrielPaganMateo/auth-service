@@ -7,8 +7,5 @@ import org.springframework.stereotype.Component;
 public class HealthMessages {
     
     public static final String SERVICE_UP = "Auth-Service is running!";
-
-    @Value("${application.version}")
-    public static final String VERSION = "${application.version}";
     
 }
