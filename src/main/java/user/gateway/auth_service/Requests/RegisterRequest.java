@@ -1,17 +1,23 @@
 package user.gateway.auth_service.Requests;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class RegisterRequest {
 
-    private String identity;
+    @NotBlank(message = "Email must be given") // Cant be used if email or phone identity option is available
+    private String email;
 
+    // private phone;
+
+    @NotBlank(message = "Password must be given") // Cant 
     private String password;
     
-    public String getIdentity() {
-        return identity;
+    public String getEmail() {
+        return email;
     }
 
-    public void setIdentity(String identity) {
-        this.identity = identity;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
