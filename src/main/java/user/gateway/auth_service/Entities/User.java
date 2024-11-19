@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+@JsonInclude(Include.NON_NULL)
 public class User {
     
     @Id
@@ -16,8 +17,14 @@ public class User {
 
     private String password;
 
-    public User() {
+    private boolean emailVerified;
+
+    private boolean phoneVerified;
+
+    public User(String email, String password) {
         this.id = UUID.randomUUID();
+        this.email = email;
+        this.password = password;
     }
 
     public UUID getId() {

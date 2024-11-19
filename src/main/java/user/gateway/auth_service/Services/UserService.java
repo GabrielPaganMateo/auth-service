@@ -19,30 +19,24 @@ public class UserService {
     @Autowired 
     private BCryptPasswordEncoder passwordEncoder;
 
-    public User getUser(String id) {
-        return userFeignClient.getUser(id);
-    }
-
     public User registerUser(RegisterRequest registerRequest) throws InvalidEmailException {
-        if (validEmail(registerRequest.getEmail()) == true) {
-            User user = mapToUser(registerRequest);
-            return userFeignClient.postUser(user);
-        }
-        throw new InvalidEmailException();
+        User user = mapToUser(registerRequest);
+        return userFeignClient.postUser(user);
     }
 
     private User mapToUser(RegisterRequest registerRequest) throws InvalidEmailException {
-        User user = new User();
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(encodePassword(registerRequest.getPassword()));
+        User user = new User(
+            validateEmail(registerRequest.getEmail()),
+            encodePassword(registerRequest.getPassword())
+        );
         return user;
     }
 
-    private boolean validEmail(String email) {
+    private String validateEmail(String email) throws InvalidEmailException {
         if (EmailValidator.getInstance().isValid(email)) {
-            return true;
+            return email;
         }
-        return false;
+        throw new InvalidEmailException();
     }
 
     private String encodePassword(String password) {
