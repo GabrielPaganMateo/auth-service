@@ -6,3 +6,6 @@ target/
 
 ### VS Code ###
 .vscode/
+
+# AWS Properties (Enpoints, Usernames, Pwd's) etc.
+src/main/resources/aws.properties
