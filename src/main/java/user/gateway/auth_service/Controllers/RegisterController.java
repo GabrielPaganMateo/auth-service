@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import user.gateway.auth_service.Constants.UrlPaths;
 import user.gateway.auth_service.Entities.User;
 import user.gateway.auth_service.Exceptions.InvalidEmailException;
+import user.gateway.auth_service.Exceptions.RegisteredUserException;
 import user.gateway.auth_service.Requests.RegisterRequest;
 import user.gateway.auth_service.Services.UserService;
 
@@ -21,7 +22,7 @@ public class RegisterController {
     private UserService userService;
 
     @PostMapping(UrlPaths.REGISTER)
-    public ResponseEntity<User> register(@Valid @RequestBody RegisterRequest registerRequest) throws InvalidEmailException {
+    public ResponseEntity<User> register(@Valid @RequestBody RegisterRequest registerRequest) throws InvalidEmailException, RegisteredUserException {
         return new ResponseEntity<User>(userService.registerUser(registerRequest), HttpStatus.CREATED);
     }
 
