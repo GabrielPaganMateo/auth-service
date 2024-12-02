@@ -13,8 +13,12 @@ import user.gateway.auth_service.Responses.ExceptionResponse;
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { RegisteredUserException.class })
-    protected ResponseEntity<Object> registerException(RegisteredUserException exception) {
-        // return handleExceptionInternal(ex, "customer error Message", new HttpHeaders(), HttpStatusCode.valueOf(420), request);
-        return new ResponseEntity<>(new ExceptionResponse(exception.getCode(), exception.getMessage()), new HttpHeaders(), HttpStatus.BAD_REQUEST.value());
+    protected ResponseEntity<ExceptionResponse> handleRegisteredUserException(RegisteredUserException exception) {
+        return new ResponseEntity<>(new ExceptionResponse(exception.getCode(), exception.getMessage()), null, HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(value = { InvalidEmailException.class })
+    protected ResponseEntity<ExceptionResponse> handleInvalidEmailException(InvalidEmailException exception) {
+        return new ResponseEntity<>(new ExceptionResponse(exception.getCode(), exception.getMessage()), null, HttpStatus.BAD_REQUEST.value());
     }
 }
