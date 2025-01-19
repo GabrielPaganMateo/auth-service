@@ -20,5 +20,4 @@ public class RegisteredUserException extends Exception {
         this.code = code;
     }
 
-
 }

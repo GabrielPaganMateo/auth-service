@@ -2,7 +2,8 @@ package user.gateway.auth_service.Enums;
 
 public enum ExceptionsEnum {
 
-    IS_REGISTERED("AUTH-00", "User is already registered"), INVALID_EMAIL("AUTH-01", "Invalid email address");
+    IS_REGISTERED("AUTH-00", "User is already registered"), INVALID_EMAIL("AUTH-01", "Invalid email address"),
+    USER_SAVE_FAIL("AUTH-02", "Failed to save user info");
 
     private final String code;
     private final String message;

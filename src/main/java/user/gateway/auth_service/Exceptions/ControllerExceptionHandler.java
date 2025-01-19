@@ -21,4 +21,10 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<ExceptionResponse> handleInvalidEmailException(InvalidEmailException exception) {
         return new ResponseEntity<>(new ExceptionResponse(exception.getCode(), exception.getMessage()), null, HttpStatus.BAD_REQUEST.value());
     }
+
+    @ExceptionHandler(value = { SaveUserException.class })
+    protected ResponseEntity<ExceptionResponse> handleSaveUserException(SaveUserException exception) {
+        return new ResponseEntity<>(new ExceptionResponse(exception.getCode(), exception.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+    
 }
