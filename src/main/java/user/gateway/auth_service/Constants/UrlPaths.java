@@ -7,5 +7,7 @@ public class UrlPaths {
     public static final String REGISTER = "/v1/register";
 
     public static final String DUMMY = "/v1/dummy";
+
+    public static final String VERIFY = "/v1/verify";
     
 }

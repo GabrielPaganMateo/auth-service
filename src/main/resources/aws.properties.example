@@ -1,0 +1,2 @@
+# AWS example aws.properties file required by project execution, actual file must be hidden from public repo
+aws.apigateway.dynamodb.users={ApiGatewayUrl}

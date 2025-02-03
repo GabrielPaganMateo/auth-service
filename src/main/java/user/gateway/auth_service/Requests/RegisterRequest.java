@@ -4,12 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 
 public class RegisterRequest {
 
-    @NotBlank(message = "Email must be given") // Cant be used if email or phone identity option is available
+    @NotBlank(message = "Email must be given")
     private String email;
 
-    // private phone;
-
-    @NotBlank(message = "Password must be given") // Cant 
+    @NotBlank(message = "Password must be given")
     private String password;
     
     public String getEmail() {
