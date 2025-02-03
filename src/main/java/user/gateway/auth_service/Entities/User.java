@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import user.gateway.auth_service.Enums.VerifiedStatusEnum;
+
 @JsonInclude(Include.NON_NULL)
 public class User {
     
@@ -17,14 +19,24 @@ public class User {
 
     private String password;
 
-    private boolean emailVerified;
+    private VerifiedStatusEnum verified;
 
-    private boolean phoneVerified;
+    public User() {
 
-    public User(String email, String password) {
+    }
+
+    public User(String email, String password, VerifiedStatusEnum verified) {
         this.id = UUID.randomUUID();
         this.email = email;
         this.password = password;
+        this.verified = verified;
+    }
+
+    public User(String id, String email, String password, VerifiedStatusEnum verified) {
+        this.id = UUID.fromString(id);
+        this.email = email;
+        this.password = password;
+        this.verified = verified;
     }
 
     public UUID getId() {
@@ -45,5 +57,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public VerifiedStatusEnum getVerified() {
+        return verified;
+    }
+
+    public void setVerified(VerifiedStatusEnum verified) {
+        this.verified = verified;
     }
 }

@@ -1,17 +1,23 @@
 package user.gateway.auth_service.Services;
 
+import java.util.Random;
+import java.util.UUID;
+import java.util.random.RandomGenerator;
+
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import feign.Response;
 import user.gateway.auth_service.Constants.MapKeys;
 import user.gateway.auth_service.Constants.RegisterMessages;
 import user.gateway.auth_service.Entities.User;
+import user.gateway.auth_service.Enums.TokenTypeEnum;
+import user.gateway.auth_service.Enums.VerifiedStatusEnum;
 import user.gateway.auth_service.Exceptions.InvalidEmailException;
 import user.gateway.auth_service.Exceptions.RegisteredUserException;
 import user.gateway.auth_service.Exceptions.SaveUserException;
@@ -31,15 +37,22 @@ public class UserService {
     @Autowired 
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailService emailService;
+
+    // @Autowired
+    // private JavaMailSender javaMailSender;
+
     public RegisterResponse registerUser(RegisterRequest registerRequest) throws InvalidEmailException, RegisteredUserException, SaveUserException {
         User user = mapToUser(registerRequest);
-        return formatResponse(createJWT(saveUser(isUserRegistered(user))));
+        return formatResponse(sendEmail(createJWT(saveUser(isUserRegistered(user)))));
     }
 
     private User mapToUser(RegisterRequest registerRequest) throws InvalidEmailException {
         User user = new User(
             validateEmail(registerRequest.getEmail()),
-            encodePassword(registerRequest.getPassword())
+            encodePassword(registerRequest.getPassword()),
+            VerifiedStatusEnum.UNVERIFIED
         );
         return user;
     }
@@ -63,20 +76,27 @@ public class UserService {
     }
 
     private User saveUser(User user) throws SaveUserException {
-        ResponseEntity<?> feignResponse = userFeign.registerUser(user); // this will never return the newly inserted item information, for that a getItem must be used
+        ResponseEntity<?> feignResponse = userFeign.registerUser(user); 
         if (feignResponse.getStatusCode() == HttpStatus.OK) {
-            return user; // decided to use the same user object instance created from the beginning
+            return user; 
         }
         throw new SaveUserException();
     }
 
-    private String createJWT(User user) {
-        return jwtService.generateToken(user);
+    private String[] createJWT(User user) {
+        String[] emailAndJwt = new String[2];
+        emailAndJwt[0] = user.getEmail();
+        emailAndJwt[1] = jwtService.generateVerificationToken(user, TokenTypeEnum.EMAIL_VERIFICATION);
+        return emailAndJwt;
     }
 
     private RegisterResponse formatResponse(String jwt) {
         String message = String.format(RegisterMessages.REGISTERED, jwtService.extractEmail(jwt));
-        return new RegisterResponse(message, jwt);
+        return new RegisterResponse(message);
+    }
+
+    private String sendEmail(String[] emailAndJwt) {
+        return emailService.sendEmail(emailAndJwt);
     }
 
 }

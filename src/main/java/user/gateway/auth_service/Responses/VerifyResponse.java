@@ -1,10 +1,10 @@
 package user.gateway.auth_service.Responses;
 
-public class RegisterResponse {
-
+public class VerifyResponse {
+    
     private String message;
 
-    public RegisterResponse(String message) {
+    public VerifyResponse(String message) {
         this.message = message;
     }
 
@@ -15,5 +15,4 @@ public class RegisterResponse {
     public void setMessage(String message) {
         this.message = message;
     }
-
 }

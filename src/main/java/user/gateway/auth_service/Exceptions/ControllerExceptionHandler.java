@@ -1,5 +1,6 @@
 package user.gateway.auth_service.Exceptions;
 
+import org.springframework.boot.autoconfigure.security.saml2.Saml2RelyingPartyProperties.AssertingParty.Verification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,11 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { SaveUserException.class })
     protected ResponseEntity<ExceptionResponse> handleSaveUserException(SaveUserException exception) {
+        return new ResponseEntity<>(new ExceptionResponse(exception.getCode(), exception.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @ExceptionHandler(value = { VerificationException.class })
+    protected ResponseEntity<ExceptionResponse> handleVerificationException(VerificationException exception) {
         return new ResponseEntity<>(new ExceptionResponse(exception.getCode(), exception.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
     

@@ -5,7 +5,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import user.gateway.auth_service.Entities.Token;
 import user.gateway.auth_service.Entities.User;
+import user.gateway.auth_service.Enums.TokenTypeEnum;
 
 import java.security.Key;
 import java.util.Date;
@@ -33,6 +35,10 @@ public class JwtService {
         return extractAllClaims(token).get("email", String.class);
     }
 
+    public int extractType(String token) {
+        return extractAllClaims(token).get("type", Integer.class);
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -44,12 +50,15 @@ public class JwtService {
         return generateToken(extraClaims, user);
     }
 
+    public String generateVerificationToken(User user, TokenTypeEnum tokenTypeEnum) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("email", user.getEmail());
+        extraClaims.put("type", tokenTypeEnum.getTypeCode());
+        return generateToken(extraClaims, user);
+    }
+
     public String generateToken(Map<String, Object> extraClaims, User user) {
         String token = buildToken(extraClaims, user, jwtExpiration);
-        for (int i = 0; i < 25; i++ ) {
-        System.out.println(extractAllClaims(token));
-        System.out.println(extractAllClaims(token).get("email", String.class));
-        }
         return token;
     }
 
@@ -73,7 +82,7 @@ public class JwtService {
         return (username.equals(id)) && !isTokenExpired(token);
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -88,6 +97,17 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public Token decodeJWT(String jwt) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(getSignInKey())
+                            .build().parseClaimsJws(jwt).getBody();
+        Token token = new Token();
+        token.setSubject(claims.getSubject());
+        token.setEmail(claims.get("email", String.class));
+        token.setType(claims.get("type", Integer.class));
+        token.setExpiration(claims.getExpiration());
+        return token;
     }
 
     private Key getSignInKey() {

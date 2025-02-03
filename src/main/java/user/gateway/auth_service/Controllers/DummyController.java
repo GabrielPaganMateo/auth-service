@@ -1,15 +1,12 @@
 package user.gateway.auth_service.Controllers;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +32,7 @@ public class DummyController {
         LocalDateTime time = jwtService.extractExpiration(token).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         body.put("expirationDate", DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss").format(time));
         body.put("isValid", jwtService.isTokenValid(token, id));
+        // body.put("type", jwtService.isTokenValid(token, id));
 
         return new ResponseEntity<Map<String, Object>>(body, HttpStatus.OK);
     }
