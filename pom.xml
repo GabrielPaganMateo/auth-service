@@ -98,7 +98,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>             
             <configuration>    
-                <mainClass>auth.papertrail.app.App</mainClass>
+                <mainClass>auth.papertrail.app.Main</mainClass>
             </configuration>
         </plugin>
       </plugins>
