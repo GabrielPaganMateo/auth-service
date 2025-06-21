@@ -2,8 +2,9 @@ package auth.papertrail.app.enumerator;
 
 public enum ExceptionCode {
 
-    INVALID_EMAIL("AUTH-00", "Invalid email format");
-    
+    INVALID_EMAIL("AUTH-00", "Invalid email format"),
+    USER_EXISTS("AUTH-01", "User already registered");
+
     private String code;
     private String message;
 
