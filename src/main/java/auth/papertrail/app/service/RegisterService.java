@@ -10,20 +10,25 @@ import auth.papertrail.app.entity.EndUser;
 import auth.papertrail.app.exception.InvalidEmailException;
 import auth.papertrail.app.exception.UserExistsException;
 import auth.papertrail.app.repository.UserRepository;
+import auth.papertrail.app.service.interfase.EmailService;
 
 @Service
 public class RegisterService {
 
     private final UserRepository userRepository;
 
+    private final EmailService emailService;
+
     @Autowired
-    public RegisterService(UserRepository userRepository) {
+    public RegisterService(UserRepository userRepository, EmailService emailService) {
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     public RegisterResponse registrationProcess(RegisterRequest request) {
         validateEmailFormat(request.getEmail());
         checkUserAlreadyExists(request.getEmail());
+        sendVerificationCode(request.getEmail());
         return new RegisterResponse("SUCCESS");
     }
 
@@ -42,5 +47,9 @@ public class RegisterService {
                 // user exists but is unverified. redirect to verification
             }
         }
+    }
+
+    private void sendVerificationCode(String email) {
+        emailService.sendVerificationEmail(email);
     }
 }
