@@ -1,4 +1,4 @@
-package auth.papertrail.app.Request;
+package auth.papertrail.app.request;
 
 public class RegisterRequest {
     // Inlude @NonNull , @NonBlank validations

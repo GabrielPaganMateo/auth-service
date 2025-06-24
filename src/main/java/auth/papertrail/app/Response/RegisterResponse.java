@@ -1,4 +1,4 @@
-package auth.papertrail.app.Response;
+package auth.papertrail.app.response;
 
 public class RegisterResponse {
 

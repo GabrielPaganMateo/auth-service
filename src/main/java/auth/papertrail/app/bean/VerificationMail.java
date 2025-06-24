@@ -4,8 +4,8 @@ public class VerificationMail {
 
     private String template;
 
-    public VerificationMail(String template) {
-        this.template = template;
+    public VerificationMail(String template, String href) {
+        this.template = String.format(template, href);
     }
 
     public String getTemplate() {
@@ -16,8 +16,8 @@ public class VerificationMail {
         this.template = template;
     }
 
-    public String formatVerificationTemplate(String to, String redirect) {
-        return String.format(template, to, redirect);
+    public String formatVerificationTemplate(String redirect) {
+        return String.format(template, redirect);
     }
 
 }

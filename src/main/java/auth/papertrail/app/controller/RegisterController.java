@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import auth.papertrail.app.Request.RegisterRequest;
-import auth.papertrail.app.Response.RegisterResponse;
+import auth.papertrail.app.request.RegisterRequest;
+import auth.papertrail.app.response.RegisterResponse;
 import auth.papertrail.app.service.RegisterService;
 
 // MUST ADD CONTROLLER ADVICE

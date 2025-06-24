@@ -17,8 +17,6 @@ public class iEmailService implements EmailService {
 
     private JavaMailSender mailSender;
 
-    // private ResourceLoader resourceLoader;
-
     private VerificationMail verificationMail;
 
     @Value("${auth-service.email.verification.from}")
@@ -26,9 +24,6 @@ public class iEmailService implements EmailService {
 
     @Value("${auth-service.email.verification.subject}")
     private String subject;
-
-    // @Value("${auth-service.email.body}")
-    // private String body;
 
     @Autowired
     public iEmailService(JavaMailSender mailSender, VerificationMail verificationMail) {
@@ -38,29 +33,19 @@ public class iEmailService implements EmailService {
     }
 
     public void sendVerificationEmail(String to) {
-        try {
-            String text = verificationMail.formatVerificationTemplate(to, "https://localhost:8080/actuator/health");
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
-            helper.setFrom(from);
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(text, true);
-            mailSender.send(message);
-        } catch (MessagingException | MailException e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message);
+                helper.setText(verificationMail.getTemplate(), true);
+                helper.setSubject(subject);
+                helper.setFrom(from);
+                helper.setTo(to);
+                mailSender.send(message);
+            } catch (MessagingException | MailException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
-
-    // private String getVerificationEmailTemplate() {
-    //     Resource resource = resourceLoader.getResource(body);
-    //     String body = null;
-    //     try (InputStream input = resource.getInputStream()) {
-    //         body = new String(input.readAllBytes());
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    //     return body;
-    // }
 
 }

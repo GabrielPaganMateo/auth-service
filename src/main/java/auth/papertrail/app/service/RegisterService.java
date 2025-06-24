@@ -4,12 +4,12 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import auth.papertrail.app.Request.RegisterRequest;
-import auth.papertrail.app.Response.RegisterResponse;
 import auth.papertrail.app.entity.EndUser;
 import auth.papertrail.app.exception.InvalidEmailException;
 import auth.papertrail.app.exception.UserExistsException;
 import auth.papertrail.app.repository.UserRepository;
+import auth.papertrail.app.request.RegisterRequest;
+import auth.papertrail.app.response.RegisterResponse;
 import auth.papertrail.app.service.interfase.EmailService;
 
 @Service
@@ -28,7 +28,8 @@ public class RegisterService {
     public RegisterResponse registrationProcess(RegisterRequest request) {
         validateEmailFormat(request.getEmail());
         checkUserAlreadyExists(request.getEmail());
-        sendVerificationCode(request.getEmail());
+        sendVerificationLink(request.getEmail());
+        // saveUserWithUnverifiedStatus
         return new RegisterResponse("SUCCESS");
     }
 
@@ -49,7 +50,7 @@ public class RegisterService {
         }
     }
 
-    private void sendVerificationCode(String email) {
+    private void sendVerificationLink(String email) {
         emailService.sendVerificationEmail(email);
     }
 }

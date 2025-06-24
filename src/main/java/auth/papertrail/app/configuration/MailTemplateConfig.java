@@ -18,16 +18,19 @@ public class MailTemplateConfig {
     @Value("${auth-service.email.verification.file}")
     private String file;
 
+    @Value("${auth-service.email.verification.href}")
+    private String href;
+
     @Bean    
     public VerificationMail verificationMail() {
         ResourceLoader resourceLoader = new DefaultResourceLoader();
         Resource resource = resourceLoader.getResource(file);
-        String body = null;
+        String template = null;
         try (InputStream input = resource.getInputStream()) {
-            body = new String(input.readAllBytes());
+            template = new String(input.readAllBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new VerificationMail(body);
+        return new VerificationMail(template, href);
     }
 }
