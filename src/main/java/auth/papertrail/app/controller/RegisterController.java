@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import auth.papertrail.app.request.RegisterRequest;
 import auth.papertrail.app.response.RegisterResponse;
-import auth.papertrail.app.service.RegisterService;
+import auth.papertrail.app.service.interfase.RegisterService;
 
 // MUST ADD CONTROLLER ADVICE
 @RestController

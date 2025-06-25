@@ -2,27 +2,29 @@ package auth.papertrail.app.entity;
 
 import java.util.UUID;
 
-import auth.papertrail.app.enumerator.UserStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import lombok.ToString;
 
 @Entity
+@ToString
 public class EndUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String email;
-    private String password;
-    private UserStatus status;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private AuthInfo authInfo;
 
     public EndUser() {}
 
-    public EndUser(String email, String password) {
+    public EndUser(String email) {
         this.email = email;
-        this.password = password;
     }
 
         public UUID getId() {
@@ -41,20 +43,12 @@ public class EndUser {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public AuthInfo getAuthInfo() {
+        return authInfo;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public UserStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(UserStatus status) {
-        this.status = status;
+    public void setAuthInfo(AuthInfo authInfo) {
+        this.authInfo = authInfo;
     }
 
 }
