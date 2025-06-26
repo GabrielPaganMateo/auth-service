@@ -1,13 +1,17 @@
 package auth.papertrail.app.response;
 
+import java.util.Map;
+
 public class RegisterResponse {
 
     private String code;
     private String message;
+    private Map<String, String> details;
 
-    public RegisterResponse(String code, String message) {
+    public RegisterResponse(String code, String message, Map<String, String> details) {
         this.code = code;
         this.message = message;
+        this.details = details;
     }
 
     public String getCode() {
@@ -26,5 +30,12 @@ public class RegisterResponse {
         this.message = message;
     }
 
-    
+    public Map<String, String> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, String> details) {
+        this.details = details;
+    }
+
 }

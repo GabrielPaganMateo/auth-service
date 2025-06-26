@@ -1,5 +1,7 @@
 package auth.papertrail.app.service.implementation;
 
+import java.util.Map;
+
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class iRegisterService implements RegisterService {
         checkUserAlreadyExists(email);
         saveUserWithUnverifiedStatus(email);
         sendVerificationLink(email);
-        return new RegisterResponse(ResponseCode.REGISTER_OK.getCode(), String.format(ResponseCode.REGISTER_OK.getMessage(), email));
+        return new RegisterResponse(ResponseCode.REGISTER_OK.getCode(), ResponseCode.REGISTER_OK.getMessage(), Map.of("email", email));
     }
 
     private void validateEmailFormat(String email) {

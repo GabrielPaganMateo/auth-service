@@ -2,7 +2,7 @@ package auth.papertrail.app.enumerator;
 
 public enum ResponseCode {
 
-    REGISTER_OK("AUTH-SUCCESS-00", "User registered, please verify %s");
+    REGISTER_OK("AUTH-SUCCESS-00", "User registered, please verify");
 
     private String code;
     private String message;
