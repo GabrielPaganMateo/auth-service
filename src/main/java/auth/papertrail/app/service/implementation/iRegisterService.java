@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 
 import auth.papertrail.app.entity.AuthInfo;
 import auth.papertrail.app.entity.EndUser;
+import auth.papertrail.app.enumerator.ResponseCode;
 import auth.papertrail.app.enumerator.UserStatus;
 import auth.papertrail.app.exception.InvalidEmailException;
 import auth.papertrail.app.exception.UserExistsException;
+import auth.papertrail.app.exception.UserUnverifiedException;
 import auth.papertrail.app.repository.UserRepository;
 import auth.papertrail.app.request.RegisterRequest;
 import auth.papertrail.app.response.RegisterResponse;
@@ -34,7 +36,7 @@ public class iRegisterService implements RegisterService {
         checkUserAlreadyExists(email);
         saveUserWithUnverifiedStatus(email);
         sendVerificationLink(email);
-        return new RegisterResponse("SUCCESS");
+        return new RegisterResponse(ResponseCode.REGISTER_OK.getCode(), String.format(ResponseCode.REGISTER_OK.getMessage(), email));
     }
 
     private void validateEmailFormat(String email) {
@@ -49,7 +51,7 @@ public class iRegisterService implements RegisterService {
             if (user.getAuthInfo().getUserStatus().getCode() == 1) {
                 throw new UserExistsException();
             } else if (user.getAuthInfo().getUserStatus().getCode() == 0) {
-                // user exists but is unverified. redirect to verification
+                throw new UserUnverifiedException(email);
             }
         }
     }

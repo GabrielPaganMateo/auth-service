@@ -1,15 +1,13 @@
 package auth.papertrail.app.enumerator;
 
-public enum ExceptionCode {
+public enum ResponseCode {
 
-    INVALID_EMAIL("AUTH-FAIL-00", "Invalid email format"),
-    USER_EXISTS("AUTH-FAIL-01", "User already registered"),
-    USER_UNVERIFIED("AUTH-FAIL-02", "User is registered please verify");
+    REGISTER_OK("AUTH-SUCCESS-00", "User registered, please verify %s");
 
     private String code;
     private String message;
 
-    ExceptionCode(String code, String message) {
+    private ResponseCode(String code, String message) {
         this.code = code;
         this.message = message;
     }

@@ -1,11 +1,11 @@
 package auth.papertrail.app.response;
 
-public class RegisterResponse {
+public class ExceptionResponse {
 
     private String code;
     private String message;
 
-    public RegisterResponse(String code, String message) {
+    public ExceptionResponse(String code, String message) {
         this.code = code;
         this.message = message;
     }
@@ -25,6 +25,5 @@ public class RegisterResponse {
     public void setMessage(String message) {
         this.message = message;
     }
-
     
 }
