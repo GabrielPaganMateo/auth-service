@@ -20,4 +20,8 @@ public class VerificationMail {
         return String.format(template, redirect);
     }
 
+    public String getTemplateWithToken(String token) {
+        return String.format(template, token);
+    }
+
 }

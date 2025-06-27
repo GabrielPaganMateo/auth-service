@@ -11,7 +11,6 @@ import auth.papertrail.app.request.RegisterRequest;
 import auth.papertrail.app.response.RegisterResponse;
 import auth.papertrail.app.service.interfase.RegisterService;
 
-// MUST ADD CONTROLLER ADVICE
 @RestController
 public class RegisterController {
 

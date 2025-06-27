@@ -43,7 +43,7 @@ public class iRegisterService implements RegisterService {
 
     private void validateEmailFormat(String email) {
         if(EmailValidator.getInstance().isValid(email) == false) {
-            throw new InvalidEmailException();
+            throw new InvalidEmailException(email);
         }
     }
 
