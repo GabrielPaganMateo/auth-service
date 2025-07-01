@@ -2,14 +2,16 @@ package auth.papertrail.app.exception;
 
 import java.util.Map;
 
+import auth.papertrail.app.enumerator.ExceptionType;
+
 public class AuthException extends RuntimeException {
 
     private String code;
     private Map<String, String> details;
 
-    AuthException(String code, String message, Map<String, String> details) {
-        super(message);
-        this.code = code;
+    public AuthException(ExceptionType exceptionType, Map<String, String> details) {
+        super(exceptionType.getMessage());
+        this.code = exceptionType.getCode();
         this.details = details;
     }
 

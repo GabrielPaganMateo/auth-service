@@ -1,22 +1,23 @@
 package auth.papertrail.app.service.implementation;
 
-import java.util.Map;
-
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import auth.papertrail.app.dto.Details;
 import auth.papertrail.app.entity.AuthInfo;
 import auth.papertrail.app.entity.EndUser;
+import auth.papertrail.app.enumerator.ExceptionType;
 import auth.papertrail.app.enumerator.ResponseCode;
+import auth.papertrail.app.enumerator.TokenType;
 import auth.papertrail.app.enumerator.UserStatus;
-import auth.papertrail.app.exception.InvalidEmailException;
-import auth.papertrail.app.exception.UserExistsException;
-import auth.papertrail.app.exception.UserUnverifiedException;
+import auth.papertrail.app.exception.AuthException;
 import auth.papertrail.app.repository.UserRepository;
 import auth.papertrail.app.request.RegisterRequest;
 import auth.papertrail.app.response.RegisterResponse;
 import auth.papertrail.app.service.interfase.EmailService;
+import auth.papertrail.app.service.interfase.JWTService;
 import auth.papertrail.app.service.interfase.RegisterService;
 
 @Service
@@ -24,11 +25,14 @@ public class iRegisterService implements RegisterService {
 
     private final UserRepository userRepository;
 
+    private final JWTService jwtService;
+
     private final EmailService emailService;
 
     @Autowired
-    public iRegisterService(UserRepository userRepository, EmailService emailService) {
+    public iRegisterService(UserRepository userRepository, JWTService jwtService, EmailService emailService) {
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
         this.emailService = emailService;
     }
 
@@ -36,36 +40,43 @@ public class iRegisterService implements RegisterService {
         String email = request.getEmail();
         validateEmailFormat(email);
         checkUserAlreadyExists(email);
-        saveUserWithUnverifiedStatus(email);
-        sendVerificationLink(email);
-        return new RegisterResponse(ResponseCode.REGISTER_OK.getCode(), ResponseCode.REGISTER_OK.getMessage(), Map.of("email", email));
+        EndUser user = saveUserWithUnverifiedStatus(email);
+        String token = generateVerificationToken(user);
+        sendVerificationLink(user, token);
+        return new RegisterResponse(ResponseCode.REGISTER_OK.getCode(), ResponseCode.REGISTER_OK.getMessage(), Details.email(email));
     }
 
     private void validateEmailFormat(String email) {
         if(EmailValidator.getInstance().isValid(email) == false) {
-            throw new InvalidEmailException(email);
+            throw new AuthException(ExceptionType.INVALID_EMAIL, Details.email(email));
         }
     }
 
+    @Transactional(readOnly = true)
     private void checkUserAlreadyExists(String email) {
        EndUser user = userRepository.findByEmail(email);
         if (user != null) { 
-            if (user.getAuthInfo().getUserStatus().getCode() == 1) {
-                throw new UserExistsException();
-            } else if (user.getAuthInfo().getUserStatus().getCode() == 0) {
-                throw new UserUnverifiedException(email);
+            if (user.getAuthInfo().getUserStatus() == UserStatus.VERIFIED) {
+                throw new AuthException(ExceptionType.USER_EXISTS, Details.email(email));
+            } else if (user.getAuthInfo().getUserStatus() == UserStatus.UNVERIFIED) {
+                throw new AuthException(ExceptionType.USER_UNVERIFIED, Details.email(email));
             }
         }
     }
 
-    private void sendVerificationLink(String email) {
-        emailService.sendVerificationEmail(email);
-    }
-
-    private void saveUserWithUnverifiedStatus(String email) {
+    @Transactional
+    private EndUser saveUserWithUnverifiedStatus(String email) {
         EndUser user = new EndUser(email);
         AuthInfo info = new AuthInfo(user, UserStatus.UNVERIFIED);
         user.setAuthInfo(info);
-        userRepository.save(user);
+        return userRepository.save(user);
+    }
+
+    private String generateVerificationToken(EndUser user) {
+        return jwtService.createToken(user, TokenType.VERIFICATION);
+    }
+
+    private void sendVerificationLink(EndUser user, String token) {
+        emailService.sendVerificationEmail(user, token);
     }
 }

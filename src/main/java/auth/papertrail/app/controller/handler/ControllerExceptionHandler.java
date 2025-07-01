@@ -1,7 +1,4 @@
-package auth.papertrail.app.controller;
-
-import java.util.HashMap;
-import java.util.Map;
+package auth.papertrail.app.controller.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
