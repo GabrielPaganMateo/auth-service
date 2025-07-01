@@ -21,6 +21,7 @@ public class WebServerConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(@NonNull InterceptorRegistry interceptorRegistry) {
         interceptorRegistry.addInterceptor(authInterceptor);
+        /* .addPathPatterns("/api/secure/**"); FOR SPECIFIC ENDPOINT CONFIGURATION*/
     }
 
 }

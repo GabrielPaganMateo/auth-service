@@ -7,7 +7,8 @@ public enum ExceptionType {
     USER_UNVERIFIED("AUTH-FAIL-02", "User is is unverified"),
     EXPIRED_TOKEN("AUTH-FAIL-03", "Token is expired"),
     INVALID_TOKEN("AUTH-FAIL-04", "Token is invalid"),
-    USER_NOT_FOUND("AUTH-FAIL-05", "User does not exist");
+    USER_NOT_FOUND("AUTH-FAIL-05", "User does not exist"),
+    INVALID_HEADER("AUTH-FAIL-06", "Missing or invalid Authorization header");
 
     private String code;
     private String message;
