@@ -8,18 +8,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import auth.papertrail.app.request.VerifyRequest;
-import auth.papertrail.app.service.interfase.JWTService;
+import auth.papertrail.app.response.VerifyResponse;
+import auth.papertrail.app.service.interfase.VerificationService;
 
 @RestController
 public class VerifyController {
 
-    @Autowired
-    JWTService jwtService;
+    private final VerificationService verificationService;
 
+    @Autowired
+    public VerifyController(VerificationService verificationService) {
+        this.verificationService = verificationService;
+    }
 
     @GetMapping("/verify/{token}")
-    public ResponseEntity<String> verify(@PathVariable String token) {
-        VerifyRequest request = new VerifyRequest(token);
-        return new ResponseEntity<>(jwtService.verifyToken(token).getIssuer(), HttpStatus.OK);
+    public ResponseEntity<VerifyResponse> verify(@PathVariable String token) {
+        VerifyResponse response = verificationService.verificationProcess(new VerifyRequest(token));
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
