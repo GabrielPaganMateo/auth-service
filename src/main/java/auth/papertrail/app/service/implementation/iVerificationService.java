@@ -70,7 +70,7 @@ public class iVerificationService implements VerificationService {
     }
 
     private String generateRegistrationToken(EndUser user) {
-        return jwtService.createToken(user, TokenType.REGISTRATION);
+        return jwtService.createToken(user, TokenType.CONFIRMATION);
     }
 
 }

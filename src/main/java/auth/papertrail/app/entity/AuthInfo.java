@@ -1,17 +1,26 @@
 package auth.papertrail.app.entity;
 
+import java.util.UUID;
+
 import auth.papertrail.app.enumerator.UserStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "AUTHINFO")
 public class AuthInfo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
     @MapsId
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
@@ -28,6 +37,14 @@ public class AuthInfo {
     public AuthInfo(EndUser user, UserStatus userStatus) {
         this.user = user;
         this.userStatus = userStatus;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public EndUser getUser() {

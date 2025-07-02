@@ -8,10 +8,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.ToString;
 
 @Entity
 @ToString
+@Table(name = "ENDUSER")
 public class EndUser {
 
     @Id
@@ -27,7 +29,7 @@ public class EndUser {
         this.email = email;
     }
 
-        public UUID getId() {
+    public UUID getId() {
         return id;
     }
 

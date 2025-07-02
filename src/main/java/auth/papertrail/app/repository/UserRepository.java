@@ -10,4 +10,5 @@ import auth.papertrail.app.entity.EndUser;
 @Repository
 public interface UserRepository extends JpaRepository<EndUser, UUID> {
     public EndUser findByEmail(String email);
+    
 }

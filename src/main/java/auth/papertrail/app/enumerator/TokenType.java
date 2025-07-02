@@ -3,8 +3,7 @@ package auth.papertrail.app.enumerator;
 public enum TokenType {
 
     VERIFICATION(0, 600l),
-    REGISTRATION(1, 600l),
-    CONFIRMATION(2, 900l),
+    CONFIRMATION(2, 600l),
     LOGIN(3, 900l);
 
     private int code;

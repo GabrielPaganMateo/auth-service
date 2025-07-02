@@ -41,7 +41,7 @@ public class AuthInterceptor implements HandlerInterceptor {
                 }
                 String token = header.substring(7, header.length());
                 DecodedJWT jwt = jwtService.verifyToken(token, metadata.requires());
-                request.setAttribute("id", jwt.getToken());
+                request.setAttribute("id", jwt.getSubject());
                 return true;
             }
         }
