@@ -36,30 +36,21 @@ public class iVerificationService implements VerificationService {
         UUID id = verifyTokenGetId(request.getToken());
         EndUser user = getUser(id);
         checkUserAlreadyVerified(user);
-        changeUserStatus(user);
         String token = generateRegistrationToken(user);
         return new AuthResponse(ResponseCode.VERIFY_OK, Map.of("email", user.getEmail(), "token", token));
     }
 
     private void checkUserAlreadyVerified(EndUser user) {
-        if (user.getAuthInfo().getUserStatus() == UserStatus.VERIFIED) {
+         if (user.getAuthInfo().getUserStatus() == UserStatus.CONFIRMED) {
             throw new AuthException(ExceptionType.USER_EXISTS, Details.email(user.getEmail()));
         }
     }
 
     @Transactional(readOnly = true) 
     EndUser getUser(UUID id) {
-        try {
-            return userRepository.findById(id).orElseThrow();
-        } catch (NoSuchElementException e) {
-            throw new AuthException(ExceptionType.USER_NOT_FOUND, Details.NONE);
-        }
-    }
-
-    @Transactional
-    private void changeUserStatus(EndUser user) {
-        user.getAuthInfo().setUserStatus(UserStatus.VERIFIED);
-        userRepository.save(user);
+            return userRepository.findById(id).orElseThrow(
+                () -> new AuthException(ExceptionType.USER_NOT_FOUND, Details.NONE)
+            );
     }
 
     private UUID verifyTokenGetId(String token) {

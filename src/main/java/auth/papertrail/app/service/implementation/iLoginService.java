@@ -5,8 +5,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import auth.papertrail.app.dto.Details;
 import auth.papertrail.app.entity.EndUser;
+import auth.papertrail.app.enumerator.ExceptionType;
+import auth.papertrail.app.enumerator.UserStatus;
 import auth.papertrail.app.exception.AuthException;
 import auth.papertrail.app.repository.UserRepository;
 import auth.papertrail.app.request.LoginRequest;
@@ -27,17 +31,32 @@ public class iLoginService implements LoginService {
     }
 
     public AuthResponse loginProcess(LoginRequest request) {
-
+        EndUser user = getUser(request);
+        checkUserStatus(user);
+        passwordMatch(user, request);
+        //generateLoginJWT
         return new AuthResponse(null, null);
     }
 
-    // private EndUser getUser(LoginRequest request) {
-    //     Optional<EndUser> oUser = userRepository.findByEmail(request.getEmail());
-    //     EndUser user = oUser.orElseThrow(throw new AuthException(null, null));
-    //     if (user.orElseThrow(null)) {
+    @Transactional(readOnly = true)
+    private EndUser getUser(LoginRequest request) {
+        Optional<EndUser> oUser = userRepository.findByEmail(request.getEmail());
+        return oUser.orElseThrow(
+            () -> new AuthException(ExceptionType.USER_NOT_FOUND, Details.email(request.getEmail()))
+        );
+    }
 
-    //     }
-    //     encoder.matches(null, null)
-    // }
+    private void checkUserStatus(EndUser user) {
+        if (user.getAuthInfo().getUserStatus() == UserStatus.REGISTERED) {
+            throw new AuthException(ExceptionType.USER_UNVERIFIED, Details.email(user.getEmail()));
+        }
+    }
+
+    private void passwordMatch(EndUser user, LoginRequest request) {
+        boolean match = encoder.matches(user.getAuthInfo().getPassword(), request.getPassword());
+        if (match == false) {
+            throw new AuthException(ExceptionType.USER_NOT_FOUND, Details.email(request.getEmail()));
+        }
+    }
 
 }

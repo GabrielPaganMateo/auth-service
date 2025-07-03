@@ -1,9 +1,12 @@
 package auth.papertrail.app.enumerator;
 
 public enum UserStatus {
+    // USE ONLY TWO STATUS 
+    // REGISTERED (set through Register Controller)
+    // CONFIRMED (set through Verify and ConfrimController)
 
-    UNVERIFIED(0),
-    VERIFIED(1);
+    REGISTERED(0),
+    CONFIRMED(1);
 
     private int code;
 

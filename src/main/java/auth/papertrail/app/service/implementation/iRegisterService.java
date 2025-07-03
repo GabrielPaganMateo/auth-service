@@ -58,9 +58,9 @@ public class iRegisterService implements RegisterService {
     private void checkUserAlreadyExists(String email) {
        Optional<EndUser> user = userRepository.findByEmail(email);
         if (user.isPresent()) { 
-            if (user.get().getAuthInfo().getUserStatus() == UserStatus.VERIFIED) {
+            if (user.get().getAuthInfo().getUserStatus() == UserStatus.CONFIRMED) {
                 throw new AuthException(ExceptionType.USER_EXISTS, Details.email(email));
-            } else if (user.get().getAuthInfo().getUserStatus() == UserStatus.UNVERIFIED) {
+            } else if (user.get().getAuthInfo().getUserStatus() == UserStatus.REGISTERED) {
                 throw new AuthException(ExceptionType.USER_UNVERIFIED, Details.email(email));
             }
         }
@@ -69,7 +69,7 @@ public class iRegisterService implements RegisterService {
     @Transactional
     private EndUser saveUserWithUnverifiedStatus(String email) {
         EndUser user = new EndUser(email);
-        AuthInfo info = new AuthInfo(user, UserStatus.UNVERIFIED);
+        AuthInfo info = new AuthInfo(user, UserStatus.REGISTERED);
         user.setAuthInfo(info);
         return userRepository.save(user);
     }

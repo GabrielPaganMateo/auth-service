@@ -5,15 +5,16 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import auth.papertrail.app.dto.Details;
 import auth.papertrail.app.enumerator.ResponseCode;
+import auth.papertrail.app.enumerator.UserStatus;
 import auth.papertrail.app.repository.AuthInfoRepository;
 import auth.papertrail.app.request.ConfirmRequest;
 import auth.papertrail.app.response.AuthResponse;
 import auth.papertrail.app.service.interfase.ConfirmationService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 
 @Service
 public class iConfirmationService implements ConfirmationService {
@@ -44,7 +45,7 @@ public class iConfirmationService implements ConfirmationService {
 
     @Transactional
     private void updatePassword(UUID id, String password) {
-        authInfoRepository.updatePassword(id, password);
+        authInfoRepository.updatePasswordAndStatus(id, password, UserStatus.CONFIRMED);
     }
 
 }
