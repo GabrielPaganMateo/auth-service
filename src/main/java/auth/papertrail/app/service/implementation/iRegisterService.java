@@ -1,5 +1,7 @@
 package auth.papertrail.app.service.implementation;
 
+import java.util.Optional;
+
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,11 +56,11 @@ public class iRegisterService implements RegisterService {
 
     @Transactional(readOnly = true)
     private void checkUserAlreadyExists(String email) {
-       EndUser user = userRepository.findByEmail(email);
-        if (user != null) { 
-            if (user.getAuthInfo().getUserStatus() == UserStatus.VERIFIED) {
+       Optional<EndUser> user = userRepository.findByEmail(email);
+        if (user.isPresent()) { 
+            if (user.get().getAuthInfo().getUserStatus() == UserStatus.VERIFIED) {
                 throw new AuthException(ExceptionType.USER_EXISTS, Details.email(email));
-            } else if (user.getAuthInfo().getUserStatus() == UserStatus.UNVERIFIED) {
+            } else if (user.get().getAuthInfo().getUserStatus() == UserStatus.UNVERIFIED) {
                 throw new AuthException(ExceptionType.USER_UNVERIFIED, Details.email(email));
             }
         }

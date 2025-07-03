@@ -1,5 +1,6 @@
 package auth.papertrail.app.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,6 @@ import auth.papertrail.app.entity.EndUser;
 
 @Repository
 public interface UserRepository extends JpaRepository<EndUser, UUID> {
-    public EndUser findByEmail(String email);
+    public Optional<EndUser> findByEmail(String email);
     
 }

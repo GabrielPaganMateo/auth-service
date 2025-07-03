@@ -2,8 +2,11 @@ package auth.papertrail.app.response;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import auth.papertrail.app.enumerator.ExceptionType;
 
+@JsonPropertyOrder({ "code", "message", "details" })
 public class ExceptionResponse {
 
     private String code;
