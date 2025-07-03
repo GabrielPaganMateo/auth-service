@@ -1,10 +1,10 @@
 package auth.papertrail.app.service.interfase;
 
 import auth.papertrail.app.request.VerifyRequest;
-import auth.papertrail.app.response.VerifyResponse;
+import auth.papertrail.app.response.AuthResponse;
 
 public interface VerificationService {
 
-    public VerifyResponse verificationProcess(VerifyRequest request);
+    public AuthResponse verificationProcess(VerifyRequest request);
 
 }

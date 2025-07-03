@@ -6,17 +6,17 @@ import auth.papertrail.app.enumerator.ExceptionType;
 
 public class AuthException extends RuntimeException {
 
-    private String code;
+    private ExceptionType exceptionType;
     private Map<String, String> details;
 
     public AuthException(ExceptionType exceptionType, Map<String, String> details) {
         super(exceptionType.getMessage());
-        this.code = exceptionType.getCode();
+        this.exceptionType = exceptionType;
         this.details = details;
     }
 
-    public String getCode() {
-        return code;
+    public ExceptionType getExceptionType() {
+        return exceptionType;
     }
 
     public Map<String, String> getDetails() {

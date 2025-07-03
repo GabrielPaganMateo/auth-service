@@ -15,7 +15,7 @@ import auth.papertrail.app.enumerator.UserStatus;
 import auth.papertrail.app.exception.AuthException;
 import auth.papertrail.app.repository.UserRepository;
 import auth.papertrail.app.request.RegisterRequest;
-import auth.papertrail.app.response.RegisterResponse;
+import auth.papertrail.app.response.AuthResponse;
 import auth.papertrail.app.service.interfase.EmailService;
 import auth.papertrail.app.service.interfase.JWTService;
 import auth.papertrail.app.service.interfase.RegisterService;
@@ -36,14 +36,14 @@ public class iRegisterService implements RegisterService {
         this.emailService = emailService;
     }
 
-    public RegisterResponse registrationProcess(RegisterRequest request) {
+    public AuthResponse registrationProcess(RegisterRequest request) {
         String email = request.getEmail();
         validateEmailFormat(email);
         checkUserAlreadyExists(email);
         EndUser user = saveUserWithUnverifiedStatus(email);
         String token = generateVerificationToken(user);
         sendVerificationLink(user, token);
-        return new RegisterResponse(ResponseCode.REGISTER_OK.getCode(), ResponseCode.REGISTER_OK.getMessage(), Details.email(email));
+        return new AuthResponse(ResponseCode.REGISTER_OK, Details.email(email));
     }
 
     private void validateEmailFormat(String email) {

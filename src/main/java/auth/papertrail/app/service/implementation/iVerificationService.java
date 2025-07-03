@@ -7,9 +7,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
-
-import auth.papertrail.app.constants.TokenClaims;
 import auth.papertrail.app.dto.Details;
 import auth.papertrail.app.entity.EndUser;
 import auth.papertrail.app.enumerator.ExceptionType;
@@ -19,7 +16,7 @@ import auth.papertrail.app.enumerator.UserStatus;
 import auth.papertrail.app.exception.AuthException;
 import auth.papertrail.app.repository.UserRepository;
 import auth.papertrail.app.request.VerifyRequest;
-import auth.papertrail.app.response.VerifyResponse;
+import auth.papertrail.app.response.AuthResponse;
 import auth.papertrail.app.service.interfase.JWTService;
 import auth.papertrail.app.service.interfase.VerificationService;
 
@@ -35,13 +32,13 @@ public class iVerificationService implements VerificationService {
         this.userRepository = userRepository;
     }
 
-    public VerifyResponse verificationProcess(VerifyRequest request) {
+    public AuthResponse verificationProcess(VerifyRequest request) {
         UUID id = verifyTokenGetId(request.getToken());
         EndUser user = getUser(id);
         checkUserAlreadyVerified(user);
         changeUserStatus(user);
         String token = generateRegistrationToken(user);
-        return new VerifyResponse(ResponseCode.VERIFY_OK.getCode(), ResponseCode.VERIFY_OK.getMessage(), Map.of("email", user.getEmail(), "token", token));
+        return new AuthResponse(ResponseCode.VERIFY_OK, Map.of("email", user.getEmail(), "token", token));
     }
 
     private void checkUserAlreadyVerified(EndUser user) {

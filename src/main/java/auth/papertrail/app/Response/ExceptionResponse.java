@@ -2,15 +2,17 @@ package auth.papertrail.app.response;
 
 import java.util.Map;
 
+import auth.papertrail.app.enumerator.ExceptionType;
+
 public class ExceptionResponse {
 
     private String code;
     private String message;
     private Map<String, String> details;
 
-    public ExceptionResponse(String code, String message, Map<String, String> details) {
-        this.code = code;
-        this.message = message;
+    public ExceptionResponse(ExceptionType exceptionType, Map<String, String> details) {
+        this.code = exceptionType.getCode();
+        this.message = exceptionType.getMessage();
         this.details = details;
     }
 

@@ -6,15 +6,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import auth.papertrail.app.exception.AuthException;
-import auth.papertrail.app.response.RegisterResponse;
+import auth.papertrail.app.response.ExceptionResponse;
 
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(AuthException.class)
-    protected ResponseEntity<RegisterResponse> handleAuthException(AuthException e) {
-        return new ResponseEntity<>(new RegisterResponse(e.getCode(), e.getMessage(), e.getDetails()), HttpStatus.BAD_REQUEST);
+    protected ResponseEntity<ExceptionResponse> handleAuthException(AuthException e) {
+        return new ResponseEntity<>(new ExceptionResponse(e.getExceptionType(), e.getDetails()), HttpStatus.BAD_REQUEST);
     }
 
 }
