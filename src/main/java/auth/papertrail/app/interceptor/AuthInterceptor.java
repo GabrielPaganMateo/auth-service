@@ -9,10 +9,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import auth.papertrail.app.annotation.AuthRequired;
+import auth.papertrail.app.constants.MapKeys;
 import auth.papertrail.app.dto.Details;
 import auth.papertrail.app.enumerator.ExceptionType;
 import auth.papertrail.app.exception.AuthException;
 import auth.papertrail.app.service.interfase.JWTService;
+import jakarta.persistence.MapKey;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -35,17 +37,17 @@ public class AuthInterceptor implements HandlerInterceptor {
             if (metadata == null) {
                 return true;
             } else {
-                String header = request.getHeader("Authorization");
-                if (header == null || header.startsWith("Bearer ") == false) {
+                String header = request.getHeader(MapKeys.AUTH_HEADER);
+                if (header == null || header.startsWith(MapKeys.BEARER) == false) {
                     throw new AuthException(ExceptionType.INVALID_HEADER, Details.NONE);
                 }
                 String token = header.substring(7, header.length());
                 DecodedJWT jwt = jwtService.verifyToken(token, metadata.requires());
-                request.setAttribute("id", jwt.getSubject());
+                request.setAttribute(MapKeys.ID, jwt.getSubject());
                 return true;
             }
         }
-        return false;
+        return true;
     }
 
 }

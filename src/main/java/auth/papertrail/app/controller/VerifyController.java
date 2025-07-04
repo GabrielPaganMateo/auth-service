@@ -20,7 +20,7 @@ public class VerifyController {
     public VerifyController(VerificationService verificationService) {
         this.verificationService = verificationService;
     }
-
+    // With the current logic, in the end you cannot respond with ResponseEntity, you would have to redirect user to frontend. 
     @GetMapping("/verify/{token}")
     public ResponseEntity<AuthResponse> verify(@PathVariable String token) {
         AuthResponse response = verificationService.verificationProcess(new VerifyRequest(token));

@@ -17,7 +17,7 @@ public interface AuthInfoRepository extends JpaRepository<AuthInfo, UUID> {
     
     @Modifying
     @Transactional
-    @Query("update AuthInfo a set a.password = :password, a.userstatus = :status WHERE a.user.id = :id")
+    @Query("update AuthInfo a set a.password = :password, a.userStatus = :status WHERE a.user.id = :id")
     public void updatePasswordAndStatus(@Param(value = "id") UUID id, @Param(value = "password") String password, @Param(value = "status") UserStatus status);
 
 }
