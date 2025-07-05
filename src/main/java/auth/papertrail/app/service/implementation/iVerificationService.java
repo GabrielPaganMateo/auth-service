@@ -1,7 +1,6 @@
 package auth.papertrail.app.service.implementation;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -13,7 +12,7 @@ import auth.papertrail.app.enumerator.ExceptionType;
 import auth.papertrail.app.enumerator.ResponseCode;
 import auth.papertrail.app.enumerator.TokenType;
 import auth.papertrail.app.enumerator.UserStatus;
-import auth.papertrail.app.exception.AuthException;
+import auth.papertrail.app.exception.VerifyException;
 import auth.papertrail.app.repository.UserRepository;
 import auth.papertrail.app.request.VerifyRequest;
 import auth.papertrail.app.response.AuthResponse;
@@ -42,14 +41,14 @@ public class iVerificationService implements VerificationService {
 
     private void checkUserAlreadyVerified(EndUser user) {
          if (user.getAuthInfo().getUserStatus() == UserStatus.CONFIRMED) {
-            throw new AuthException(ExceptionType.USER_EXISTS, Details.email(user.getEmail()));
+            throw new VerifyException(ExceptionType.USER_EXISTS, Details.email(user.getEmail()));
         }
     }
 
     @Transactional(readOnly = true) 
     EndUser getUser(UUID id) {
             return userRepository.findById(id).orElseThrow(
-                () -> new AuthException(ExceptionType.USER_NOT_FOUND, Details.NONE)
+                () -> new VerifyException(ExceptionType.USER_NOT_FOUND, Details.NONE)
             );
     }
 

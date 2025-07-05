@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import auth.papertrail.app.bean.VerificationMail;
 import auth.papertrail.app.entity.EndUser;
 import auth.papertrail.app.service.interfase.EmailService;
-import auth.papertrail.app.service.interfase.JWTService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
@@ -21,8 +20,6 @@ public class iEmailService implements EmailService {
 
     private final VerificationMail verificationMail;
 
-    private final JWTService jwtService;
-
     @Value("${auth-service.email.verification.from}")
     private String from;
 
@@ -30,11 +27,10 @@ public class iEmailService implements EmailService {
     private String subject;
 
     @Autowired
-    public iEmailService(JavaMailSender mailSender, VerificationMail verificationMail, JWTService jwtService) {
+    public iEmailService(JavaMailSender mailSender, VerificationMail verificationMail) {
         this.mailSender = mailSender;
         // this.resourceLoader = resourceLoader;
         this.verificationMail = verificationMail;
-        this.jwtService = jwtService;
     }
 
     public void sendVerificationEmail(EndUser user, String token) {
