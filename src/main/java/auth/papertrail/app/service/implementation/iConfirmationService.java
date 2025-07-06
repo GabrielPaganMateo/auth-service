@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import auth.papertrail.app.dto.Details;
+import auth.papertrail.app.enumerator.ExceptionType;
 import auth.papertrail.app.enumerator.ResponseCode;
 import auth.papertrail.app.enumerator.UserStatus;
+import auth.papertrail.app.exception.AuthException;
 import auth.papertrail.app.repository.AuthInfoRepository;
 import auth.papertrail.app.request.ConfirmRequest;
 import auth.papertrail.app.response.AuthResponse;
@@ -31,6 +33,7 @@ public class iConfirmationService implements ConfirmationService {
 
     public AuthResponse confirmationProcess(HttpServletRequest servletRequest, ConfirmRequest request) {
         UUID id = getUuid(servletRequest.getAttribute("id").toString());
+        checkUserStatus(id);
         updatePassword(id, encodePassword(request));
         return new AuthResponse(ResponseCode.CONFIRM_OK, Details.NONE);
     }
@@ -41,6 +44,16 @@ public class iConfirmationService implements ConfirmationService {
 
     private UUID getUuid(String id) {
         return UUID.fromString(id);
+    }
+
+    @Transactional
+    private void checkUserStatus(UUID id) {
+        UserStatus status = authInfoRepository.findById(id).orElseThrow(
+            () -> new AuthException(ExceptionType.USER_NOT_FOUND, Details.NONE)
+        ).getUserStatus();
+        if (UserStatus.CONFIRMED == status) {
+            throw new AuthException(ExceptionType.USER_CONFIRMED, Details.NONE);
+        }
     }
 
     @Transactional
