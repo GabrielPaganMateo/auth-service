@@ -2,6 +2,7 @@ package auth.papertrail.app.service.implementation;
 
 import java.time.Instant;
 import java.util.GregorianCalendar;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,11 +31,12 @@ public class iJWTService implements JWTService {
         this.algorithm = algorithm;
     }
 
-    public String createToken(EndUser user, TokenType type) {
+    public String createToken(EndUser user, TokenType type, Map<String, String> details) {
         return JWT.create()
             .withIssuer(TokenClaims.ISSUER)
             .withClaim(TokenClaims.TYPE, type.getCode())
             .withSubject(user.getId().toString())
+            .withClaim(TokenClaims.DETAILS, details)
             .withExpiresAt(Instant.now().plusSeconds(type.getTimeToLive()))
             .sign(algorithm);
     }

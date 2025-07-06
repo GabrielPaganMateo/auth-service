@@ -75,7 +75,7 @@ public class iRegisterService implements RegisterService {
     }
 
     private String generateVerificationToken(EndUser user) {
-        return jwtService.createToken(user, TokenType.VERIFICATION);
+        return jwtService.createToken(user, TokenType.VERIFICATION, Details.email(user.getEmail()));
     }
 
     private void sendVerificationLink(EndUser user, String token) {

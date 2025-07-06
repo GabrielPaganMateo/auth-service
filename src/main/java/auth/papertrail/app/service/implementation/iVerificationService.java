@@ -57,7 +57,7 @@ public class iVerificationService implements VerificationService {
     }
 
     private String generateRegistrationToken(EndUser user) {
-        return jwtService.createToken(user, TokenType.CONFIRMATION);
+        return jwtService.createToken(user, TokenType.CONFIRMATION, Details.NONE);
     }
 
 }

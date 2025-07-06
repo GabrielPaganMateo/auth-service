@@ -68,7 +68,7 @@ public class iLoginService implements LoginService {
     }
 
     private String generateLoginToken(EndUser user) {
-        return jwtService.createToken(user, TokenType.LOGIN);
+        return jwtService.createToken(user, TokenType.LOGIN, Details.NONE);
     }
 
     private void setAuthHeader(EndUser user, HttpServletResponse servletResponse) {

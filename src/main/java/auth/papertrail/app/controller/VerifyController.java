@@ -26,8 +26,7 @@ public class VerifyController {
         this.verificationService = verificationService;
         this.redirectService = redirectService;
     }
-    // With the current logic, in the end you cannot respond with ResponseEntity, you would have to redirect user to frontend. 
-    // With failed verification , the redirect must also send to an error page, which allows to reattempt verification depending on the case.
+    
     @GetMapping("/verify/{token}")
     public ModelAndView verify(@PathVariable String token, ModelMap model) {
         AuthResponse response = verificationService.verificationProcess(new VerifyRequest(token));
