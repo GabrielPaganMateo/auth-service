@@ -18,8 +18,8 @@ public class MailTemplateConfig {
     @Value("${auth-service.email.verification.file}")
     private String file;
 
-    @Value("${auth-service.email.verification.href}")
-    private String href;
+    // @Value("${auth-service.email.verification.href}")
+    // private String href;
 
     @Bean    
     public VerificationMail verificationMail() {
@@ -31,6 +31,6 @@ public class MailTemplateConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new VerificationMail(template, href);
+        return new VerificationMail(template);
     }
 }

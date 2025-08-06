@@ -2,12 +2,9 @@ package auth.papertrail.app.interceptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import auth.papertrail.app.annotation.AuthRequired;

@@ -9,7 +9,11 @@ public enum ExceptionType {
     INVALID_TOKEN("AUTH-FAIL-04", "Token is invalid"),
     USER_NOT_FOUND("AUTH-FAIL-05", "User does not exist"),
     INVALID_HEADER("AUTH-FAIL-06", "Missing or invalid Authorization header"),
-    USER_CONFIRMED("AUTH-FAIL-07", "User is confirmed");
+    USER_CONFIRMED("AUTH-FAIL-07", "User is confirmed"),
+    USER_WITHOUT_OTP("AUTH-FAIL-08", "Code does not exist for this user"),
+    EXPIRED_OTP("AUTH-FAIL-09", "Expired verification code"),
+    INVALID_OTP("AUTH-FAIL-10", "Invalid verification code"),
+    ERROR("AUTH-FAIL-99", "Server Error");
 
     private String code;
     private String message;

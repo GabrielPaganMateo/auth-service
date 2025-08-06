@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import auth.papertrail.app.constants.MapKeys;
 import auth.papertrail.app.dto.Details;
 import auth.papertrail.app.entity.AuthInfo;
 import auth.papertrail.app.entity.EndUser;
+import auth.papertrail.app.entity.OneTimePasscode;
 import auth.papertrail.app.enumerator.ExceptionType;
 import auth.papertrail.app.enumerator.ResponseCode;
 import auth.papertrail.app.enumerator.TokenType;
@@ -20,7 +22,9 @@ import auth.papertrail.app.request.RegisterRequest;
 import auth.papertrail.app.response.AuthResponse;
 import auth.papertrail.app.service.interfase.EmailService;
 import auth.papertrail.app.service.interfase.JWTService;
+import auth.papertrail.app.service.interfase.OTPService;
 import auth.papertrail.app.service.interfase.RegisterService;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class iRegisterService implements RegisterService {
@@ -31,20 +35,24 @@ public class iRegisterService implements RegisterService {
 
     private final EmailService emailService;
 
+    private final OTPService otpService;
+
     @Autowired
-    public iRegisterService(UserRepository userRepository, JWTService jwtService, EmailService emailService) {
+    public iRegisterService(UserRepository userRepository, JWTService jwtService, EmailService emailService, OTPService otpService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.emailService = emailService;
+        this.otpService = otpService;
     }
 
-    public AuthResponse registrationProcess(RegisterRequest request) {
+    public AuthResponse registrationProcess(RegisterRequest request, HttpServletResponse response) {
         String email = request.getEmail();
         validateEmailFormat(email);
         checkUserAlreadyExists(email);
         EndUser user = saveUserWithUnverifiedStatus(email);
-        String token = generateVerificationToken(user);
-        sendVerificationLink(user, token);
+        setAuthHeader(user, response);
+        int code = otpService.generateOTP(user);
+        sendVerificationLink(user, code);
         return new AuthResponse(ResponseCode.REGISTER_OK, Details.email(email));
     }
 
@@ -56,11 +64,13 @@ public class iRegisterService implements RegisterService {
 
     @Transactional(readOnly = true)
     private void checkUserAlreadyExists(String email) {
-       Optional<EndUser> user = userRepository.findByEmail(email);
-        if (user.isPresent()) { 
-            if (user.get().getAuthInfo().getUserStatus() == UserStatus.CONFIRMED) {
+       Optional<EndUser> optionalEndUser = userRepository.findByEmail(email);
+        if (optionalEndUser.isPresent()) { 
+            EndUser endUser = optionalEndUser.get();
+            if (endUser.getAuthInfo().getUserStatus() == UserStatus.CONFIRMED) {
                 throw new AuthException(ExceptionType.USER_EXISTS, Details.email(email));
-            } else if (user.get().getAuthInfo().getUserStatus() == UserStatus.REGISTERED) {
+            } else if (endUser.getAuthInfo().getUserStatus() == UserStatus.REGISTERED) {
+                otpService.emailOTP(endUser);
                 throw new AuthException(ExceptionType.USER_UNVERIFIED, Details.email(email));
             }
         }
@@ -78,7 +88,12 @@ public class iRegisterService implements RegisterService {
         return jwtService.createToken(user, TokenType.VERIFICATION, Details.email(user.getEmail()));
     }
 
-    private void sendVerificationLink(EndUser user, String token) {
-        emailService.sendVerificationEmail(user, token);
+    private void sendVerificationLink(EndUser user, int code) {
+        emailService.sendVerificationEmail(user, code);
+    }
+
+    private void setAuthHeader(EndUser user, HttpServletResponse servletResponse) {
+        String token = generateVerificationToken(user);
+        servletResponse.addHeader(MapKeys.AUTH_HEADER, MapKeys.BEARER + token);
     }
 }

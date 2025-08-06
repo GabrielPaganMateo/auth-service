@@ -17,10 +17,9 @@ import auth.papertrail.app.repository.UserRepository;
 import auth.papertrail.app.request.VerifyRequest;
 import auth.papertrail.app.response.AuthResponse;
 import auth.papertrail.app.service.interfase.JWTService;
-import auth.papertrail.app.service.interfase.VerificationService;
 
 @Service
-public class iVerificationService implements VerificationService {
+public class iVerificationService {
 
     private final JWTService jwtService;
 

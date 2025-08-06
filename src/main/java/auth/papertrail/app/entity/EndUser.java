@@ -13,7 +13,7 @@ import lombok.ToString;
 
 @Entity
 @ToString
-@Table(name = "ENDUSER")
+@Table(name = "ENDUSERS")
 public class EndUser {
 
     @Id

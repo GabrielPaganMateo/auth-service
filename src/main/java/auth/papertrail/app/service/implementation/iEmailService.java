@@ -33,7 +33,7 @@ public class iEmailService implements EmailService {
         this.verificationMail = verificationMail;
     }
 
-    public void sendVerificationEmail(EndUser user, String token) {
+    public void sendVerificationEmail(EndUser user, int code) {
         new Thread(() -> {
             try {
                 MimeMessage message = mailSender.createMimeMessage();
@@ -41,7 +41,7 @@ public class iEmailService implements EmailService {
                 helper.setFrom(from);
                 helper.setTo(user.getEmail());
                 helper.setSubject(subject);
-                helper.setText(verificationMail.getTemplateWithToken(token), true);
+                helper.setText(verificationMail.getTemplateWithToken(code), true);
                 mailSender.send(message);
             } catch (MessagingException | MailException e) {
                 e.printStackTrace();

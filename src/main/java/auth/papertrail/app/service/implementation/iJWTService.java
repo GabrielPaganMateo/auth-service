@@ -1,7 +1,6 @@
 package auth.papertrail.app.service.implementation;
 
 import java.time.Instant;
-import java.util.GregorianCalendar;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;

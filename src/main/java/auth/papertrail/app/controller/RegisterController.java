@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import auth.papertrail.app.request.RegisterRequest;
 import auth.papertrail.app.response.AuthResponse;
 import auth.papertrail.app.service.interfase.RegisterService;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 public class RegisterController {
@@ -22,8 +23,8 @@ public class RegisterController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        AuthResponse response = registerService.registrationProcess(request);
+    public ResponseEntity<AuthResponse> register(HttpServletResponse servletResponse, @RequestBody RegisterRequest request) {
+        AuthResponse response = registerService.registrationProcess(request, servletResponse);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

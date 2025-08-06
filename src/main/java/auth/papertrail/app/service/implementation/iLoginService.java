@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import auth.papertrail.app.constants.MapKeys;
 import auth.papertrail.app.dto.Details;
 import auth.papertrail.app.entity.EndUser;
+import auth.papertrail.app.entity.OneTimePasscode;
 import auth.papertrail.app.enumerator.ExceptionType;
 import auth.papertrail.app.enumerator.ResponseCode;
 import auth.papertrail.app.enumerator.TokenType;
@@ -20,6 +21,7 @@ import auth.papertrail.app.request.LoginRequest;
 import auth.papertrail.app.response.AuthResponse;
 import auth.papertrail.app.service.interfase.JWTService;
 import auth.papertrail.app.service.interfase.LoginService;
+import auth.papertrail.app.service.interfase.OTPService;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
@@ -31,11 +33,14 @@ public class iLoginService implements LoginService {
 
     private final JWTService jwtService;
 
+    private final OTPService otpService;
+
     @Autowired
-    public iLoginService(UserRepository userRepository, PasswordEncoder encoder, JWTService jwtService) {
+    public iLoginService(UserRepository userRepository, PasswordEncoder encoder, JWTService jwtService, OTPService otpService) {
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.jwtService = jwtService;
+        this.otpService = otpService;
     }
 
     public AuthResponse loginProcess(HttpServletResponse servletResponse, LoginRequest request) {
@@ -56,6 +61,7 @@ public class iLoginService implements LoginService {
 
     private void checkUserStatus(EndUser user) {
         if (user.getAuthInfo().getUserStatus() == UserStatus.REGISTERED) {
+            otpService.sendNewOTP(user);
             throw new AuthException(ExceptionType.USER_UNVERIFIED, Details.email(user.getEmail()));
         }
     }
