@@ -11,7 +11,6 @@ import auth.papertrail.app.constants.MapKeys;
 import auth.papertrail.app.dto.Details;
 import auth.papertrail.app.entity.AuthInfo;
 import auth.papertrail.app.entity.EndUser;
-import auth.papertrail.app.entity.OneTimePasscode;
 import auth.papertrail.app.enumerator.ExceptionType;
 import auth.papertrail.app.enumerator.ResponseCode;
 import auth.papertrail.app.enumerator.TokenType;
@@ -48,7 +47,7 @@ public class iRegisterService implements RegisterService {
     public AuthResponse registrationProcess(RegisterRequest request, HttpServletResponse response) {
         String email = request.getEmail();
         validateEmailFormat(email);
-        checkUserAlreadyExists(email);
+        checkUserAlreadyExists(email, response);
         EndUser user = saveUserWithUnverifiedStatus(email);
         setAuthHeader(user, response);
         int code = otpService.generateOTP(user);
@@ -62,15 +61,16 @@ public class iRegisterService implements RegisterService {
         }
     }
 
-    @Transactional(readOnly = true)
-    private void checkUserAlreadyExists(String email) {
+    @Transactional
+    private void checkUserAlreadyExists(String email, HttpServletResponse servletResponse) {
        Optional<EndUser> optionalEndUser = userRepository.findByEmail(email);
         if (optionalEndUser.isPresent()) { 
             EndUser endUser = optionalEndUser.get();
             if (endUser.getAuthInfo().getUserStatus() == UserStatus.CONFIRMED) {
                 throw new AuthException(ExceptionType.USER_EXISTS, Details.email(email));
             } else if (endUser.getAuthInfo().getUserStatus() == UserStatus.REGISTERED) {
-                otpService.emailOTP(endUser);
+                otpService.sendNewOTP(endUser);
+                setAuthHeader(endUser, servletResponse);
                 throw new AuthException(ExceptionType.USER_UNVERIFIED, Details.email(email));
             }
         }

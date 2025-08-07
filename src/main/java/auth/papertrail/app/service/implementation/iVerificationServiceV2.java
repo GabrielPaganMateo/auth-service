@@ -91,4 +91,12 @@ public class iVerificationServiceV2 implements VerificationService {
         }
         throw new AuthException(ExceptionType.INVALID_OTP, Details.NONE);
     }
+
+    @Override
+    public AuthResponse resendVerificationCode(HttpServletRequest servletRequest) {
+        String id = getUserIdfromRequest(servletRequest);
+        EndUser user = getUser(id);
+        otpService.sendNewOTP(user);
+        return new AuthResponse(ResponseCode.RESEND_OK,  Details.NONE);
+    }
 }

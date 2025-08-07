@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import auth.papertrail.app.constants.MapKeys;
 import auth.papertrail.app.dto.Details;
 import auth.papertrail.app.entity.EndUser;
-import auth.papertrail.app.entity.OneTimePasscode;
 import auth.papertrail.app.enumerator.ExceptionType;
 import auth.papertrail.app.enumerator.ResponseCode;
 import auth.papertrail.app.enumerator.TokenType;
@@ -45,9 +44,9 @@ public class iLoginService implements LoginService {
 
     public AuthResponse loginProcess(HttpServletResponse servletResponse, LoginRequest request) {
         EndUser user = getUser(request);
-        checkUserStatus(user);
+        checkUserStatus(user, servletResponse);
         passwordMatch(user, request);
-        setAuthHeader(user, servletResponse);
+        setAuthHeader(user, servletResponse, generateLoginToken(user));
         return new AuthResponse(ResponseCode.LOGIN_OK, Details.NONE);
     }
 
@@ -59,8 +58,9 @@ public class iLoginService implements LoginService {
         );
     }
 
-    private void checkUserStatus(EndUser user) {
+    private void checkUserStatus(EndUser user, HttpServletResponse servletResponse) {
         if (user.getAuthInfo().getUserStatus() == UserStatus.REGISTERED) {
+            setAuthHeader(user, servletResponse, generateVerificationToken(user));
             otpService.sendNewOTP(user);
             throw new AuthException(ExceptionType.USER_UNVERIFIED, Details.email(user.getEmail()));
         }
@@ -77,8 +77,11 @@ public class iLoginService implements LoginService {
         return jwtService.createToken(user, TokenType.LOGIN, Details.NONE);
     }
 
-    private void setAuthHeader(EndUser user, HttpServletResponse servletResponse) {
-        String token = generateLoginToken(user);
+    private String generateVerificationToken(EndUser user) {
+        return jwtService.createToken(user, TokenType.VERIFICATION, Details.NONE);
+    }
+
+    private void setAuthHeader(EndUser user, HttpServletResponse servletResponse, String token) {
         servletResponse.addHeader(MapKeys.AUTH_HEADER, MapKeys.BEARER + token);
     }
 
