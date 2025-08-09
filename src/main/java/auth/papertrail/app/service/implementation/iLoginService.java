@@ -46,7 +46,7 @@ public class iLoginService implements LoginService {
         EndUser user = getUser(request);
         checkUserStatus(user, servletResponse);
         passwordMatch(user, request);
-        setAuthHeader(user, servletResponse, generateLoginToken(user));
+        setAuthHeader(servletResponse, generateLoginToken(user));
         return new AuthResponse(ResponseCode.LOGIN_OK, Details.NONE);
     }
 
@@ -60,7 +60,7 @@ public class iLoginService implements LoginService {
 
     private void checkUserStatus(EndUser user, HttpServletResponse servletResponse) {
         if (user.getAuthInfo().getUserStatus() == UserStatus.REGISTERED) {
-            setAuthHeader(user, servletResponse, generateVerificationToken(user));
+            setAuthHeader(servletResponse, generateVerificationToken(user));
             otpService.sendNewOTP(user);
             throw new AuthException(ExceptionType.USER_UNVERIFIED, Details.email(user.getEmail()));
         }
@@ -69,7 +69,7 @@ public class iLoginService implements LoginService {
     private void passwordMatch(EndUser user, LoginRequest request) {
         boolean match = encoder.matches(request.getPassword(), user.getAuthInfo().getPassword());
         if (match == false) {
-            throw new AuthException(ExceptionType.USER_NOT_FOUND, Details.email(request.getEmail()));
+            throw new AuthException(ExceptionType.INVALID_CREDENTIALS, Details.email(request.getEmail()));
         }
     }
 
@@ -81,7 +81,7 @@ public class iLoginService implements LoginService {
         return jwtService.createToken(user, TokenType.VERIFICATION, Details.NONE);
     }
 
-    private void setAuthHeader(EndUser user, HttpServletResponse servletResponse, String token) {
+    private void setAuthHeader(HttpServletResponse servletResponse, String token) {
         servletResponse.addHeader(MapKeys.AUTH_HEADER, MapKeys.BEARER + token);
     }
 

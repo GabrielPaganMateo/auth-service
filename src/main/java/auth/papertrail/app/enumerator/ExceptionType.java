@@ -13,6 +13,7 @@ public enum ExceptionType {
     USER_WITHOUT_OTP("AUTH-FAIL-08", "Code does not exist for this user"),
     EXPIRED_OTP("AUTH-FAIL-09", "Expired verification code"),
     INVALID_OTP("AUTH-FAIL-10", "Invalid verification code"),
+    INVALID_CREDENTIALS("AUTH-FAIL-11", "Invalid Credentials"),
     ERROR("AUTH-FAIL-99", "Server Error");
 
     private String code;

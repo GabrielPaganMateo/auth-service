@@ -1,8 +1,5 @@
 package auth.papertrail.app.entity;
 
-import java.security.SecureRandom;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Date;
 
 import jakarta.persistence.CascadeType;
@@ -15,7 +12,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "ONETIMEPASSCODES") //183085
+@Table(name = "ONETIMEPASSCODES")
 public class OneTimePasscode {
 
     @Id
