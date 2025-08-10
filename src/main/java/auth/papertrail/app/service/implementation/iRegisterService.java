@@ -2,7 +2,6 @@ package auth.papertrail.app.service.implementation;
 
 import java.util.Optional;
 
-import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +22,7 @@ import auth.papertrail.app.service.interfase.EmailService;
 import auth.papertrail.app.service.interfase.JWTService;
 import auth.papertrail.app.service.interfase.OTPService;
 import auth.papertrail.app.service.interfase.RegisterService;
+import auth.papertrail.app.service.utilities.AuthServiceUtils;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
@@ -46,19 +46,13 @@ public class iRegisterService implements RegisterService {
 
     public AuthResponse registrationProcess(RegisterRequest request, HttpServletResponse response) {
         String email = request.getEmail();
-        validateEmailFormat(email);
+        AuthServiceUtils.validateEmailFormat(email);
         checkUserAlreadyExists(email, response);
         EndUser user = saveUserWithUnverifiedStatus(email);
         setAuthHeader(user, response);
         int code = otpService.generateOTP(user);
         sendVerificationLink(user, code);
         return new AuthResponse(ResponseCode.REGISTER_OK, Details.email(email));
-    }
-
-    private void validateEmailFormat(String email) {
-        if(EmailValidator.getInstance().isValid(email) == false) {
-            throw new AuthException(ExceptionType.INVALID_EMAIL, Details.email(email));
-        }
     }
 
     @Transactional

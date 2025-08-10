@@ -21,6 +21,7 @@ import auth.papertrail.app.response.AuthResponse;
 import auth.papertrail.app.service.interfase.JWTService;
 import auth.papertrail.app.service.interfase.LoginService;
 import auth.papertrail.app.service.interfase.OTPService;
+import auth.papertrail.app.service.utilities.AuthServiceUtils;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
@@ -43,6 +44,7 @@ public class iLoginService implements LoginService {
     }
 
     public AuthResponse loginProcess(HttpServletResponse servletResponse, LoginRequest request) {
+        AuthServiceUtils.validateEmailFormat(request.getEmail());
         EndUser user = getUser(request);
         checkUserStatus(user, servletResponse);
         passwordMatch(user, request);
