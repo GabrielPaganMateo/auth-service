@@ -30,7 +30,8 @@ public class WebServerConfig implements WebMvcConfigurer {
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/**")
             .allowedOrigins("http://localhost:5173")
-            .allowedMethods("*").allowedHeaders("*")
+            .allowedMethods("*")
+            .allowedHeaders("*") // LIMIT HEADERS TO AUTHORIZATION AND CONTENT-TYPE, DONT NEED NOTHING ELSE
             .exposedHeaders(MapKeys.AUTH_HEADER);
     }
 

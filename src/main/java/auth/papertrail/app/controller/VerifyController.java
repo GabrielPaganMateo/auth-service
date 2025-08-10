@@ -32,7 +32,7 @@ public class VerifyController {
     // }
 
     @AuthRequired(requires = TokenType.VERIFICATION)
-    @PostMapping("/verify/v2")
+    @PostMapping("/verify")
     public ResponseEntity<AuthResponse> verify(@RequestBody VerifyRequestV2 request, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         AuthResponse response = verificationService.verificationProcess(request, servletRequest, servletResponse);
         return new ResponseEntity<>(response, HttpStatus.OK);
