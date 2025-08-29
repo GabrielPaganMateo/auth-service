@@ -1,0 +1,48 @@
+## Self-signed keystore
+#server:
+#  ssl:
+#    key-store: classpath:local-keystore.p12
+#    key-store-password: local-keystore
+
+# Spring configurations
+spring:
+  # In-memory database
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:test
+    username: test
+    password: test
+    driverClassName: org.h2.Driver
+    jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  # Email
+  mail:
+    host:
+
+    username:
+    password:
+    transport:
+      protocol: smtp
+    smtp:
+      port: 25
+      auth: true
+      starttls:
+        enable: true
+        required: true
+
+auth-service:
+  email:
+    verification:
+      from:
+      subject: Identity Verification
+      file: classpath:/templates/verification-email.html
+      href: https://localhost:8080/verify/
+  algorithm:
+    secret:
+  redirect:
+    verification: https://localhost:8080/health
+  otp:
+    time-to-live(minutes): 2
+
